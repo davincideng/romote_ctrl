@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "RemoteCtrl.h"
+#include "ServerScoket.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -16,6 +17,7 @@
 CWinApp theApp;
 
 using namespace std;
+
 
 int main()
 {
@@ -35,6 +37,35 @@ int main()
         else
         {
             // TODO: 在此处为应用程序的行为编写代码。
+            // TODO: 服务器  socket bind listen  accept read write close 
+            
+            // windows特有  套接字初始化
+            //server;       
+            CServerScoket* pserver = CServerScoket::getInstance();
+            int count = 0;
+            if (pserver->InitSocket() == false) {
+                MessageBox(NULL, _T(""), _T("网络初始化失败"), MB_OK | MB_ICONERROR);
+                exit(0);
+            }
+            while (CServerScoket::getInstance() != NULL) {               
+                if (pserver->AcceptClient() == false) {
+                    if (count >= 3) {
+                        MessageBox(NULL, _T(""), _T("多次接入用户失败，退出！"), MB_OK | MB_ICONERROR);
+                        exit(0);
+                    }
+                    MessageBox(NULL, _T(""), _T("接入用户失败"), MB_OK | MB_ICONERROR);
+                    count++;
+                }
+                int ret = pserver->DealCommand();
+                //TODO 
+            }
+            
+            
+
+
+
+
+
             
         }
     }
