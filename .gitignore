@@ -3,3 +3,5 @@
 ################################################################################
 
 /RemoteCtrl/.vs/RemoteCtrl/v17/ipch
+/RemoteCtrl/.vs/RemoteCtrl
+/.gitignore
