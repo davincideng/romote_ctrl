@@ -14,7 +14,7 @@ public:
 		strData = pack.strData;
 		sSum = pack.sSum;
 	}
-	CPacket(const BYTE* pData, size_t& nSize) {
+	CPacket(const BYTE* pData, size_t& nSize) {//nSize传入接收到的数据大小，  返回成功读取的大小  因为有的未读取
 		size_t i = 0;
 		for (; i < nSize; i++) {
 			if (*(WORD*)(pData + i) == 0xFEFF) {//pData + i  表示从pData指针开始的第i个字节
