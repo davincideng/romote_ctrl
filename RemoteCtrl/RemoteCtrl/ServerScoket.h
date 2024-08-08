@@ -3,10 +3,29 @@
 #include "framework.h"
 
 #define SERV_PORT 9527
-
+#pragma pack(push)
+#pragma pack(1)
 class CPacket {
 public:
 	CPacket(): sHead(0), nLength(0), sCmd(0), sSum(0){}
+	//打包
+	CPacket(WORD nCmd, const BYTE* pData, size_t nSize) {
+		sHead = 0xFEFF;
+		nLength = nSize + 4;
+		sCmd = nCmd;
+		if (nSize > 0) {
+			strData.resize(nSize);
+			memcpy((void*)strData.c_str(), pData, nSize);
+		}
+		else {
+			strData.clear();
+		}
+		sSum = 0;
+		for (size_t j = 0; j < strData.size(); j++)
+		{
+			sSum += BYTE(strData[j]) & 0xFF;
+		}
+	}
 	CPacket(const CPacket& pack) {
 		sHead = pack.sHead;
 		nLength = pack.nLength;
@@ -14,7 +33,8 @@ public:
 		strData = pack.strData;
 		sSum = pack.sSum;
 	}
-	CPacket(const BYTE* pData, size_t& nSize) {//nSize传入接收到的数据大小，  返回成功读取的大小  因为有的未读取
+	//解包
+	CPacket(const BYTE* pData, size_t& nSize) {//nSize传入接收到的数据大小， 引用类型  返回成功读取的大小  因为有的未读取
 		size_t i = 0;
 		for (; i < nSize; i++) {
 			if (*(WORD*)(pData + i) == 0xFEFF) {//pData + i  表示从pData指针开始的第i个字节
@@ -42,7 +62,7 @@ public:
 		sSum = *(WORD*)(pData + i); i += 2;
 		WORD sum = 0;
 		for (size_t j = 0; j < strData.size(); j++) {
-			sum += BYTE(strData[i]) & 0xFF;
+			sum += BYTE(strData[j]) & 0xFF;
 		}
 		if (sum == sSum) {
 			nSize = i;//head  length
@@ -59,6 +79,19 @@ public:
 		}
 		return *this;
 	}
+	int Size() {//包数据的大小
+		return nLength + 6;
+	}
+	const char* Data() {
+		strOut.resize(nLength + 6);
+		BYTE* pData = (BYTE*)strOut.c_str();
+		*(WORD*)pData = sHead; pData += 2;
+		*(WORD*)pData = nLength; pData += 4;
+		*(WORD*)pData = sCmd; pData += 2;
+		memcpy(pData, strData.c_str(), strData.size()); pData += strData.size();
+		*(WORD*)pData = sSum;
+		return strOut.c_str();
+	}
 public:
 	//在 C++ 中，WORD-->unsigned int 16       BYTE-->unsigned int 8	
 	WORD sHead;//包头 固定位   用FE FF 
@@ -66,8 +99,10 @@ public:
 	WORD sCmd;//控制命令
 	std::string strData;//包数据
 	WORD sSum;//和校验
-
+	std::string strOut;//整个包的数据
 };
+
+#pragma pack(pop)
 
 class CServerScoket
 {
@@ -128,9 +163,13 @@ public:
 		return -1;
 	}
 
-	bool SendCommand(const char* pData, int nSize) {
+	bool Send(const char* pData, int nSize) {
 		if (m_client == -1) return false;
 		return send(m_client, pData, nSize, 0) > 0;
+	}
+	bool Send(CPacket& pack) {
+		if (m_client == -1) return false;
+		return send(m_client, pack.Data(), pack.Size(), 0) > 0;
 	}
 
 
