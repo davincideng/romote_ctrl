@@ -104,6 +104,19 @@ public:
 
 #pragma pack(pop)
 
+typedef struct MouseEvent{
+	MouseEvent() {
+		nAction = 0;
+		nButton = -1;
+		ptXY.x = 0;
+		ptXY.y = 0;
+	}
+	WORD nAction;//鼠标动作  点击 移动 双击
+	WORD nButton;//左键  右键  中键
+	POINT ptXY;//坐标
+
+}MOUSEEV,*PMOUSEEV;
+
 class CServerScoket
 {
 public:
@@ -175,6 +188,13 @@ public:
 		if ((m_packet.sCmd == 2) || (m_packet.sCmd == 3) || (m_packet.sCmd == 4)) {
 			strPath = m_packet.strData;
 			return true;
+		}
+		return false;
+	}
+	bool GetMouseEvent(MOUSEEV& mouse) {
+		if (m_packet.sCmd == 5) {
+			memcpy(&mouse, m_packet.strData.c_str(), sizeof(MOUSEEV));
+			return TRUE;
 		}
 		return false;
 	}
