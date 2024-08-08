@@ -48,6 +48,62 @@ int MakeDriverInfo() {//1==>A 2==>B 3==>C ... 26==>Z
     //CServerScoket::getInstance()->Send(pack);
     return 0;
 }
+#include<stdio.h>
+#include<io.h>
+#include <list>
+typedef struct file_info{
+    file_info() {//结构体构造函数  不需要析构
+        IsInvalid = FALSE;
+        IsDirectory = -1;
+        HasNext = TRUE;
+        memset(szFileName, 0, sizeof(szFileName));
+    }
+    BOOL IsInvalid;//是否有效
+    BOOL IsDirectory;//是否为目录  0 否   1是
+    BOOL HasNext;//是否还有后续 0 没有  1有
+    char szFileName[256];//文件名
+    
+}FILEINFO, PFILEINFO;
+int MakeDirectoryInfo() {
+    std::string strPath;
+    //std::list<FILEINFO> lstFileInfos;
+    if (CServerScoket::getInstance()->GetFilePath(strPath) == false) {
+        OutputDebugString(_T("当前的命令不是获取文件列表，命令解析错误"));
+        return -1;
+    }
+    if (_chdir(strPath.c_str()) != 0) {
+        FILEINFO fInfo;
+        fInfo.IsInvalid = TRUE;
+        fInfo.IsDirectory = TRUE;
+        fInfo.HasNext = FALSE;
+        memcpy(fInfo.szFileName, strPath.c_str(), strPath.size());       
+        //lstFileInfos.push_back(fInfo);
+        CPacket pack(2, (BYTE*)&fInfo, sizeof(fInfo));
+        CServerScoket::getInstance()->Send(pack);
+        OutputDebugString(_T("没有权限访问目录"));
+        return -2;
+    }
+    _finddata_t fdata;
+    int hfind = 0;
+    if ((hfind =_findfirst("*", &fdata)) == -1) {
+        OutputDebugString(_T("没有找到任何文件"));
+        return -3;
+    }
+    do {
+        FILEINFO fInfo;
+        fInfo.IsDirectory = (fdata.attrib & _A_SUBDIR) != 0;
+        memcpy(fInfo.szFileName, fdata.name, strlen(fdata.name));
+        //lstFileInfos.push_back(fInfo);
+        CPacket pack(2, (BYTE*)&fInfo, sizeof(fInfo));
+        CServerScoket::getInstance()->Send(pack);
+    } while (!_findnext(hfind, &fdata));
+    //发送信息到控制端
+    FILEINFO fInfo;
+    fInfo.HasNext = FALSE;
+    CPacket pack(2, (BYTE*)&fInfo, sizeof(fInfo));
+    CServerScoket::getInstance()->Send(pack);
+    return 0;
+}
 
 int main()
 {
@@ -92,6 +148,9 @@ int main()
             {
             case 1://查看磁盘分区
                 MakeDriverInfo();
+                break;
+            case 2://查看指定目录下的文件
+                MakeDirectoryInfo();
                 break;
             default:
                 break;
