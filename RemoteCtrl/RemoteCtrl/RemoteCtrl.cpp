@@ -46,7 +46,7 @@ int MakeDriverInfo() {//1==>A 2==>B 3==>C ... 26==>Z
     }
     CPacket pack(1, (BYTE*)result.c_str(), result.size());//打包
     Dump((BYTE*)pack.Data(), pack.Size());
-    //CServerScoket::getInstance()->Send(pack);
+    CServerScoket::getInstance()->Send(pack);
     return 0;
 }
 #include<stdio.h>
@@ -442,7 +442,7 @@ int main()
                 }
                 int ret = pserver->DealCommand();       
                 if (ret > 0) {
-                    ret = ExcuteCmmond(ret);
+                    ret = ExcuteCmmond(pserver->GetPacket().sCmd);
                     if (ret != 0) {
                         TRACE("执行命令失败：%d ret = %d\r\n", pserver->GetPacket().sCmd, ret);
                     }
