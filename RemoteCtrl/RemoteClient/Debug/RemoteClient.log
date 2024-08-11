@@ -1,7 +1,6 @@
-﻿  pch.cpp
-  ClientSocket.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(91,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
-  RemoteClient.cpp
+﻿  ClientSocket.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(92,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
   RemoteClientDlg.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(92,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
   正在生成代码...
   RemoteClient.vcxproj -> C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\Debug\RemoteClient.exe

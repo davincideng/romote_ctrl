@@ -366,6 +366,46 @@ int UnlockMachine()
     return 0;
 }
 
+int TestConnect() {
+    CPacket pack(1981, NULL, 0);
+    CServerScoket::getInstance()->Send(pack);
+    return 0;
+}
+
+int ExcuteCmmond(int nCmd) {
+    int ret = 0;
+    switch (nCmd)
+    {
+    case 1://查看磁盘分区
+        ret = MakeDriverInfo();
+        break;
+    case 2://查看指定目录下的文件
+        ret = MakeDirectoryInfo();
+        break;
+    case 3://打开文件
+        ret = RunFile();
+        break;
+    case 4://下载文件
+        ret = DownloadFile();
+        break;
+    case 5:
+        ret = MouseEvent();
+    case 6://发送屏幕内容-->本质 发送屏幕截图
+        ret = SendScreen();
+    case 7://锁机
+        ret = LockMachine();
+        break;
+    case 8:
+        ret = UnlockMachine();
+        break;
+    case 1981:
+        ret = TestConnect();
+    default:
+        break;
+    }
+    return ret;
+}
+
 int main()
 {
     int nRetCode = 0;
@@ -383,60 +423,32 @@ int main()
         }
         else
         {
-            // TODO: 在此处为应用程序的行为编写代码。
-            // TODO: 服务器  socket bind listen  accept read write close            
-            //CServerScoket* pserver = CServerScoket::getInstance();
-            //int count = 0;
-            //if (pserver->InitSocket() == false) {
-            //    MessageBox(NULL, _T(""), _T("网络初始化失败"), MB_OK | MB_ICONERROR);
-            //    exit(0);
-            //}
-            //while (CServerScoket::getInstance() != NULL) {               
-            //    if (pserver->AcceptClient() == false) {
-            //        if (count >= 3) {
-            //            MessageBox(NULL, _T(""), _T("多次接入用户失败，退出！"), MB_OK | MB_ICONERROR);
-            //            exit(0);
-            //        }
-            //        MessageBox(NULL, _T(""), _T("接入用户失败"), MB_OK | MB_ICONERROR);
-            //        count++;
-            //    }
-            //    int ret = pserver->DealCommand();
-            //    //TODO 
-            //}
-           
-            int nCmd = 8;
-            switch (nCmd)
-            {
-            case 1://查看磁盘分区
-                MakeDriverInfo();
-                break;
-            case 2://查看指定目录下的文件
-                MakeDirectoryInfo();
-                break;
-            case 3://打开文件
-                RunFile();
-                break;
-            case 4://下载文件
-                DownloadFile();
-                break;
-            case 5:
-                MouseEvent();
-            case 6://发送屏幕内容-->本质 发送屏幕截图
-                SendScreen();
-            case 7://锁机
-                LockMachine();
-                break;
-            case 8:
-                UnlockMachine();
-                break;
-            default:
-                break;
+             //TODO: 在此处为应用程序的行为编写代码。
+             //TODO: 服务器  socket bind listen  accept read write close            
+            CServerScoket* pserver = CServerScoket::getInstance();
+            int count = 0;
+            if (pserver->InitSocket() == false) {
+                MessageBox(NULL, _T(""), _T("网络初始化失败"), MB_OK | MB_ICONERROR);
+                exit(0);
             }
-            /*Sleep(5000);
-            UnlockMachine();
-            while (dlg.m_hWnd != NULL) {
-                Sleep(10);
-            }*/
+            while (CServerScoket::getInstance() != NULL) {               
+                if (pserver->AcceptClient() == false) {
+                    if (count >= 3) {
+                        MessageBox(NULL, _T(""), _T("多次接入用户失败，退出！"), MB_OK | MB_ICONERROR);
+                        exit(0);
+                    }
+                    MessageBox(NULL, _T(""), _T("接入用户失败"), MB_OK | MB_ICONERROR);
+                    count++;
+                }
+                int ret = pserver->DealCommand();       
+                if (ret > 0) {
+                    ret = ExcuteCmmond(ret);
+                    if (ret != 0) {
+                        TRACE("执行命令失败：%d ret = %d\r\n", pserver->GetPacket().sCmd, ret);
+                    }
+                    pserver->CloseClient();
+                }               
+            }         
         }
     }
     else
