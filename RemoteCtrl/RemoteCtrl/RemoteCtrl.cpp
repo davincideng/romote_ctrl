@@ -52,19 +52,7 @@ int MakeDriverInfo() {//1==>A 2==>B 3==>C ... 26==>Z
 #include<stdio.h>
 #include<io.h>
 #include <list>
-typedef struct file_info{
-    file_info() {//结构体构造函数  不需要析构
-        IsInvalid = FALSE;
-        IsDirectory = -1;
-        HasNext = TRUE;
-        memset(szFileName, 0, sizeof(szFileName));
-    }
-    BOOL IsInvalid;//是否有效
-    BOOL IsDirectory;//是否为目录  0 否   1是
-    BOOL HasNext;//是否还有后续 0 没有  1有
-    char szFileName[256];//文件名
-    
-}FILEINFO, PFILEINFO;
+
 int MakeDirectoryInfo() {
     std::string strPath;
     //std::list<FILEINFO> lstFileInfos;
@@ -73,12 +61,8 @@ int MakeDirectoryInfo() {
         return -1;
     }
     if (_chdir(strPath.c_str()) != 0) {
-        FILEINFO fInfo;
-        fInfo.IsInvalid = TRUE;
-        fInfo.IsDirectory = TRUE;
-        fInfo.HasNext = FALSE;
-        memcpy(fInfo.szFileName, strPath.c_str(), strPath.size());       
-        //lstFileInfos.push_back(fInfo);
+        FILEINFO fInfo;   
+        fInfo.HasNext = FALSE;    
         CPacket pack(2, (BYTE*)&fInfo, sizeof(fInfo));
         CServerScoket::getInstance()->Send(pack);
         OutputDebugString(_T("没有权限访问目录"));
@@ -388,17 +372,17 @@ int ExcuteCmmond(int nCmd) {
     case 4://下载文件
         ret = DownloadFile();
         break;
-    case 5:
+    case 5://鼠标移动
         ret = MouseEvent();
     case 6://发送屏幕内容-->本质 发送屏幕截图
         ret = SendScreen();
     case 7://锁机
         ret = LockMachine();
         break;
-    case 8:
+    case 8://解锁
         ret = UnlockMachine();
         break;
-    case 1981:
+    case 1981://测试
         ret = TestConnect();
     default:
         break;

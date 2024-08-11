@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "framework.h"
-
+void Dump(BYTE* pData, size_t nSize);
 #define SERV_PORT 9527
 #pragma pack(push)
 #pragma pack(1)
@@ -117,6 +117,20 @@ typedef struct MouseEvent{
 
 }MOUSEEV,*PMOUSEEV;
 
+typedef struct file_info {
+	file_info() {//结构体构造函数  不需要析构
+		IsInvalid = FALSE;
+		IsDirectory = -1;
+		HasNext = TRUE;
+		memset(szFileName, 0, sizeof(szFileName));
+	}
+	BOOL IsInvalid;//是否有效
+	BOOL IsDirectory;//是否为目录  0 否   1是
+	BOOL HasNext;//是否还有后续 0 没有  1有
+	char szFileName[256];//文件名
+
+}FILEINFO, *PFILEINFO;
+
 class CServerScoket
 {
 public:
@@ -190,6 +204,7 @@ public:
 	}
 	bool Send(CPacket& pack) { 
 		if (m_client == -1) return false;
+		Dump((BYTE*)pack.Data(), pack.Size());
 		return send(m_client, pack.Data(), pack.Size(), 0) > 0;
 	}
 	bool GetFilePath(std::string& strPath) {

@@ -120,6 +120,20 @@ typedef struct MouseEvent {
 
 }MOUSEEV, * PMOUSEEV;
 
+typedef struct file_info {
+	file_info() {//结构体构造函数  不需要析构
+		IsInvalid = FALSE;
+		IsDirectory = -1;
+		HasNext = TRUE;
+		memset(szFileName, 0, sizeof(szFileName));
+	}
+	BOOL IsInvalid;//是否有效
+	BOOL IsDirectory;//是否为目录  0 否   1是
+	BOOL HasNext;//是否还有后续 0 没有  1有
+	char szFileName[256];//文件名
+
+}FILEINFO, *PFILEINFO;
+
 std::string GetErrInfo(int wsaErrcode);
 
 class CClientSocket
@@ -158,21 +172,20 @@ public:
 
 #define BUFFER_SIZE 4096
 	int DealCommand() {
-		if (m_sock == -1) return -1;
-		//char buffer[1024] = "";
+		if (m_sock == -1)return -1;
 		char* buffer = m_buffer.data();
-		memset(buffer, 0, sizeof(buffer));
-		size_t index = 0;
-		while (1) {
+		static size_t index = 0;
+		while (true) {
 			size_t len = recv(m_sock, buffer + index, BUFFER_SIZE - index, 0);
-			if (len <= 0) {
+			if ((len <= 0) && (index <= 0)) {
 				return -1;
 			}
+			//Dump((BYTE*)buffer, index);
 			index += len;
 			len = index;
 			m_packet = CPacket((BYTE*)buffer, len);
 			if (len > 0) {
-				memmove(buffer, buffer + len, BUFFER_SIZE - len);
+				memmove(buffer, buffer + len, index - len);
 				index -= len;
 				return m_packet.sCmd;
 			}
