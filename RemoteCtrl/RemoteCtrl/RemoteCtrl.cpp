@@ -99,14 +99,15 @@ int RunFile() {
     return 0;
 }
 
+#pragma warning(disable:4966) // fopen sprintf strcpy strstr 
 int DownloadFile() {
     std::string strPath;
     CServerScoket::getInstance()->GetFilePath(strPath);
     long long data = 0;
     FILE* pFile = NULL;
     errno_t err = fopen_s(&pFile, strPath.c_str(), "rb");
-    if (err !=  0) {
-        CPacket pack(4, (BYTE*)&data, 8);
+    if (err != 0) {
+        CPacket  pack(4, (BYTE*)&data, 8);
         CServerScoket::getInstance()->Send(pack);
         return -1;
     }
@@ -114,6 +115,7 @@ int DownloadFile() {
         fseek(pFile, 0, SEEK_END);
         data = _ftelli64(pFile);
         CPacket head(4, (BYTE*)&data, 8);
+        CServerScoket::getInstance()->Send(head);
         fseek(pFile, 0, SEEK_SET);
         char buffer[1024] = "";
         size_t rlen = 0;
@@ -121,13 +123,12 @@ int DownloadFile() {
             rlen = fread(buffer, 1, 1024, pFile);
             CPacket pack(4, (BYTE*)buffer, rlen);
             CServerScoket::getInstance()->Send(pack);
-        } while (rlen >= 1024);        
+        } while (rlen >= 1024);
         fclose(pFile);
     }
     CPacket pack(4, NULL, 0);
     CServerScoket::getInstance()->Send(pack);
     return 0;
-    
 }
 
 int MouseEvent() {
@@ -352,7 +353,21 @@ int UnlockMachine()
 
 int TestConnect() {
     CPacket pack(1981, NULL, 0);
-    CServerScoket::getInstance()->Send(pack);
+    bool ret =CServerScoket::getInstance()->Send(pack);
+    TRACE("Send ret = %d\r\n", ret);
+    return 0;
+}
+
+int DeleteLocalFile() {
+    //TODO 
+    std::string strPath;
+    CServerScoket::getInstance()->GetFilePath(strPath);
+    TCHAR sPath[MAX_PATH] = _T("");
+    mbstowcs(sPath, strPath.c_str(), strPath.size());
+    DeleteFile(sPath);
+    CPacket pack(9, NULL, 0);
+    bool ret = CServerScoket::getInstance()->Send(pack);
+    TRACE("Send ret = %d\r\n", ret);
     return 0;
 }
 
@@ -381,6 +396,9 @@ int ExcuteCmmond(int nCmd) {
         break;
     case 8://解锁
         ret = UnlockMachine();
+        break;
+    case 9://删除文件
+        ret = DeleteLocalFile();
         break;
     case 1981://测试
         ret = TestConnect();
