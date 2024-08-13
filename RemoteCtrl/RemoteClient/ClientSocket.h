@@ -8,6 +8,7 @@
 #define SERV_PORT 9527
 #pragma pack(push)
 #pragma pack(1)
+void Dump(BYTE* pData, size_t nSize);
 class CPacket {
 public:
 	CPacket() : sHead(0), nLength(0), sCmd(0), sSum(0) {}
@@ -180,7 +181,7 @@ public:
 			if ((len <= 0) && (index <= 0)) {
 				return -1;
 			}
-			//Dump((BYTE*)buffer, index);
+			Dump((BYTE*)buffer, index);
 			index += len;
 			len = index;
 			m_packet = CPacket((BYTE*)buffer, len);
@@ -238,6 +239,7 @@ private:
 			exit(0);
 		}
 		m_buffer.resize(BUFFER_SIZE);
+		memset(m_buffer.data(), 0, BUFFER_SIZE);
 	}
 	~CClientSocket() {
 		closesocket(m_sock);
