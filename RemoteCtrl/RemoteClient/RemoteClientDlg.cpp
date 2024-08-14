@@ -269,7 +269,6 @@ void CRemoteClientDlg::threadWatchData()
 					if ((HBITMAP)m_image != NULL)
 						m_image.Destroy();
 					m_image.Load(pStream);
-					//m_image.Save(_T("test1111.png"), Gdiplus::ImageFormatPNG);
 					m_isFull = true;
 				}
 			}
