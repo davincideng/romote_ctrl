@@ -24,7 +24,7 @@ public:
 		for (size_t j = 0; j < strData.size(); j++)
 		{
 			sSum += BYTE(strData[j]) & 0xFF;
-		}
+		}		
 	}
 	CPacket(const CPacket& pack) {
 		sHead = pack.sHead;
@@ -48,7 +48,7 @@ public:
 			nSize = 0;
 			return;
 		}
-		nLength = *(WORD*)(pData + i); i += 4;
+		nLength = *(DWORD*)(pData + i); i += 4;
 		if (nLength + i > nSize) {//包未完全接收到  返回  接收失败
 			nSize = 0;
 			return;
@@ -86,7 +86,7 @@ public:
 		strOut.resize(nLength + 6);
 		BYTE* pData = (BYTE*)strOut.c_str();
 		*(WORD*)pData = sHead; pData += 2;
-		*(WORD*)pData = nLength; pData += 4;
+		*(DWORD*)(pData) = nLength; pData += 4;
 		*(WORD*)pData = sCmd; pData += 2;
 		memcpy(pData, strData.c_str(), strData.size()); pData += strData.size();
 		*(WORD*)pData = sSum;
@@ -169,32 +169,33 @@ public:
 	}
 #define BUFFER_SIZE 4096
 	int DealCommand() {
-		if (m_client == -1) return -1;
+		if (m_client == -1)return -1;
 		//char buffer[1024] = "";
 		char* buffer = new char[BUFFER_SIZE];
 		if (buffer == NULL) {
-			TRACE("内存不足\r\n");
+			TRACE("内存不足！\r\n");
 			return -2;
 		}
-		memset(buffer, 0, sizeof(buffer));
+		memset(buffer, 0, BUFFER_SIZE);
 		size_t index = 0;
-		while (1) {
-			size_t len = recv(m_client, buffer+index, BUFFER_SIZE-index, 0);
+		while (true) {
+			size_t len = recv(m_client, buffer + index, BUFFER_SIZE - index, 0);
 			if (len <= 0) {
-				delete[] buffer;
+				delete[]buffer;
 				return -1;
 			}
+			TRACE("recv %d\r\n", len);
 			index += len;
 			len = index;
-			m_packet = CPacket ((BYTE*)buffer, len);
+			m_packet = CPacket((BYTE*)buffer, len);
 			if (len > 0) {
 				memmove(buffer, buffer + len, BUFFER_SIZE - len);
 				index -= len;
-				delete[] buffer;
+				delete[]buffer;
 				return m_packet.sCmd;
 			}
 		}
-		delete[] buffer;
+		delete[]buffer;
 		return -1;
 	}
 
@@ -202,9 +203,9 @@ public:
 		if (m_client == -1) return false;
 		return send(m_client, pData, nSize, 0) > 0;
 	}
-	bool Send(CPacket& pack) { 
-		if (m_client == -1) return false;
-		Dump((BYTE*)pack.Data(), pack.Size());
+	bool Send(CPacket& pack) {
+		if (m_client == -1)return false;
+		//Dump((BYTE*)pack.Data(), pack.Size());
 		return send(m_client, pack.Data(), pack.Size(), 0) > 0;
 	}
 	bool GetFilePath(std::string& strPath) {

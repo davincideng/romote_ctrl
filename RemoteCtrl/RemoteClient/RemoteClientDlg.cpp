@@ -82,6 +82,7 @@ int CRemoteClientDlg::SendCommandPacket(int nCmd, bool bAutoClose, BYTE* pData, 
 	pClient->Send(pack);
 	int cmd = pClient->DealCommand();
 	TRACE("ack:%d\r\n", cmd);
+	TRACE("recv pack size = %d\r\n", pClient->GetPacket().strData.size());
 	if(bAutoClose)
 		pClient->CloseSocket();
 	return nCmd;
@@ -241,44 +242,42 @@ void CRemoteClientDlg::threadEntryForWatchData(void* arg)
 
 void CRemoteClientDlg::threadWatchData()
 {
+	Sleep(50);
 	CClientSocket* pClient = NULL;
 	do {
 		pClient = CClientSocket::getInstance();
 	} while (pClient == NULL);
-	for (;;) {		
-		CPacket pack(6, NULL, 0);
-		bool ret = pClient->Send(pack);
-		if (ret) {
-			int cmd = pClient->DealCommand();
-			if (cmd == 6) {
-				if (m_isFull == false) {//更新数据到缓存
-					BYTE* pData = (BYTE*)pClient->GetPacket().strData.c_str();
-					//TODO 存入CImage
-					HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, 0);//在堆区开辟一片内存
-					if (hMem == NULL) {
-						TRACE("内存不足");	
-						Sleep(1);
-						continue;
-					}
-					IStream* pStream = NULL;
-					HRESULT hRet = CreateStreamOnHGlobal(hMem, TRUE, &pStream);
-					if (hRet == S_OK) {
-						ULONG length = 0;
-						pStream->Write(pData, pClient->GetPacket().strData.size(), &length);
-						LARGE_INTEGER bg = { 0 };
-						pStream->Seek(bg, STREAM_SEEK_SET, NULL);
-						m_image.Load(pStream);
-						m_isFull = true;
-					}
-					
-				}			
+	while (1) {//等价于while(true)
+		if (m_isFull == false) {//更新数据到缓存
+			int ret = SendMessage(WM_SEND_PACKET, 6 << 1 | 1);
+			if (ret == 6) {
+				BYTE* pData = (BYTE*)pClient->GetPacket().strData.c_str();
+				HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, pClient->GetPacket().strData.size());
+				if (hMem == NULL) {
+					TRACE("内存不足了！");
+					Sleep(1);
+					//continue;
+				}
+				IStream* pStream = NULL;
+				HRESULT hRet = CreateStreamOnHGlobal(hMem, TRUE, &pStream);
+				if (hRet == S_OK) {
+					ULONG length = 0;
+					pStream->Write(pData, pClient->GetPacket().strData.size(), &length);					
+					TRACE("strData.size() = %d\r\n", pClient->GetPacket().strData.size());
+					LARGE_INTEGER bg = { 0 };
+					pStream->Seek(bg, STREAM_SEEK_SET, NULL);
+					if ((HBITMAP)m_image != NULL)
+						m_image.Destroy();
+					m_image.Load(pStream);
+					//m_image.Save(_T("test1111.png"), Gdiplus::ImageFormatPNG);
+					m_isFull = true;
+				}
 			}
 			else {
 				Sleep(1);
 			}
 		}
-		
-
+		else Sleep(1);
 	}
 }
 
@@ -496,23 +495,38 @@ void CRemoteClientDlg::OnRunFile()
 	strFile = strPath + strFile;
 	int ret = SendCommandPacket(3, true, (BYTE*)(LPCSTR)strFile, strFile.GetLength());
 	if (ret < 0) {
-		AfxMessageBox("打开文件命令执行失败");
+		AfxMessageBox(_T("打开文件命令执行失败"));
 	}
 }
 
 LRESULT CRemoteClientDlg::OnSendPacket(WPARAM wParam, LPARAM lParam)//④实现消息响应函数
 {
-	CString strFile = (LPCSTR)lParam;
-	int ret = SendCommandPacket(wParam>>1, wParam&1, (BYTE*)(LPCSTR)strFile, strFile.GetLength());
-	return LRESULT();
+	int ret = 0;
+	int cmd = wParam >> 1;
+	switch (cmd) {
+	case 4: 
+		{
+			CString strFile = (LPCSTR)lParam;
+			ret = SendCommandPacket(cmd, wParam & 1, (BYTE*)(LPCSTR)strFile, strFile.GetLength());
+		}
+		break;
+	case 6: 
+		{
+			ret = SendCommandPacket(cmd, wParam & 1);
+		}
+		break;
+	default:
+		ret = -1;
+	}
+	return ret;
 }
 
 
 void CRemoteClientDlg::OnBnClickedBtnStartWatch()
 {
-	_beginthread(CRemoteClientDlg::threadEntryForWatchData, 0, this);
-	GetDlgItem(IDC_BTN_START_WATCH)->EnableWindow(false);
 	CWatchDialog dlg(this);
+	_beginthread(CRemoteClientDlg::threadEntryForWatchData, 0, this);
+	//GetDlgItem(IDC_BTN_START_WATCH)->EnableWindow(false);	
 	dlg.DoModal();
 }
 

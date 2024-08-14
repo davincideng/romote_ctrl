@@ -52,7 +52,8 @@ public:
 			nSize = 0;
 			return;
 		}
-		nLength = *(WORD*)(pData + i); i += 4;
+		nLength = *(DWORD*)(pData + i); i += 4;
+		//nLength = 200785; i += 4;
 		if (nLength + i > nSize) {//包未完全接收到  返回  接收失败
 			nSize = 0;
 			return;
@@ -90,7 +91,7 @@ public:
 		strOut.resize(nLength + 6);
 		BYTE* pData = (BYTE*)strOut.c_str();
 		*(WORD*)pData = sHead; pData += 2;
-		*(WORD*)pData = nLength; pData += 4;
+		*(DWORD*)(pData) = nLength; pData += 4;
 		*(WORD*)pData = sCmd; pData += 2;
 		memcpy(pData, strData.c_str(), strData.size()); pData += strData.size();
 		*(WORD*)pData = sSum;
@@ -159,32 +160,35 @@ public:
 		serv_adr.sin_port = htons(nPort);
 		//connect
 		if (serv_adr.sin_addr.s_addr == INADDR_NONE) {
-			AfxMessageBox("指定IP地址不存在");
+			AfxMessageBox(_T("指定IP地址不存在"));
 			return false;
 		}
 		int ret = connect(m_sock, (sockaddr*)&serv_adr, sizeof(serv_adr));
 		if (ret == -1) {
-			AfxMessageBox("连接失败");
+			AfxMessageBox(_T("连接失败"));
 			TRACE("连接失败：%d %s\r\n", WSAGetLastError(), GetErrInfo(WSAGetLastError()).c_str());
 			return false;
 		}
 		return true;
 	}
 
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 2048000
 	int DealCommand() {
 		if (m_sock == -1)return -1;
 		char* buffer = m_buffer.data();
 		static size_t index = 0;
 		while (true) {
 			size_t len = recv(m_sock, buffer + index, BUFFER_SIZE - index, 0);
+			DWORD nLength = static_cast<DWORD>(*(WORD*)(buffer + 2));
+			TRACE("111   %d\r\n", nLength);
 			if ((len <= 0) && (index <= 0)) {
 				return -1;
 			}
-			Dump((BYTE*)buffer, index);
+			//Dump((BYTE*)buffer, index);
 			index += len;
 			len = index;
 			m_packet = CPacket((BYTE*)buffer, len);
+			TRACE("解包之后的大小:%d\r\n", m_packet.strData.size());
 			if (len > 0) {
 				memmove(buffer, buffer + len, index - len);
 				index -= len;

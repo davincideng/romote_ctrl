@@ -1,3 +1,2 @@
 ﻿  RemoteCtrl.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteCtrl\ServerScoket.h(89,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
   RemoteCtrl.vcxproj -> C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\Debug\RemoteCtrl.exe

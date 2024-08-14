@@ -228,30 +228,35 @@ int MouseEvent() {
 }
 
 int SendScreen() {
-    CImage screen;//GDI  全局设备接口
-    HDC hScreen = ::GetDC(NULL); //拿到屏幕句柄
-    int nBitPerPixel = GetDeviceCaps(hScreen, BITSPIXEL);//24  RGB888  24bit  返回使用多少个bit表示颜色
+    CImage screen;//GDI
+    HDC hScreen = ::GetDC(NULL);
+    int nBitPerPixel = GetDeviceCaps(hScreen, BITSPIXEL);//24   ARGB8888 32bit RGB888 24bit RGB565  RGB444
     int nWidth = GetDeviceCaps(hScreen, HORZRES);
     int nHeight = GetDeviceCaps(hScreen, VERTRES);
     screen.Create(nWidth, nHeight, nBitPerPixel);
-    BitBlt(screen.GetDC(), 0, 0, 1920, 1020, hScreen, 0, 0, SRCCOPY);
+    BitBlt(screen.GetDC(), 0, 0, nWidth, nHeight, hScreen, 0, 0, SRCCOPY);
     ReleaseDC(NULL, hScreen);
-    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, 0);//在堆区开辟一片内存
-    if (hMem == NULL) return -1;
-    IStream* pStream = NULL; 
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, 0);
+    if (hMem == NULL)return -1;
+    IStream* pStream = NULL;
     HRESULT ret = CreateStreamOnHGlobal(hMem, TRUE, &pStream);
     if (ret == S_OK) {
-        screen.Save(pStream, Gdiplus::ImageFormatPNG);//会默认将指针设到尾部
-        LARGE_INTEGER bg = {0};
+        screen.Save(pStream, Gdiplus::ImageFormatPNG);
+        LARGE_INTEGER bg = { 0 };
         pStream->Seek(bg, STREAM_SEEK_SET, NULL);
         PBYTE pData = (PBYTE)GlobalLock(hMem);
         SIZE_T nSize = GlobalSize(hMem);
         CPacket pack(6, pData, nSize);
+        DWORD nLength = static_cast<DWORD>(*(WORD*)(pack.Data() + 2));
+        TRACE("2221   %d\r\n", nLength);
+        TRACE("send nLentth = %d\r\n", pack.nLength);
+        TRACE("send strData.size = %d\r\n",pack.strData.size());
         CServerScoket::getInstance()->Send(pack);
         GlobalUnlock(hMem);
-    }    
-    //screen.Save(_T("test.png"), Gdiplus::ImageFormatPNG);
-    /*
+    }
+    //screen.Save(_T("test2222.png"), Gdiplus::ImageFormatPNG);
+    /*screen.Save(_T("test2020.png"), Gdiplus::ImageFormatPNG);
+   
     TRACE("png %d\r\n", GetTickCount64() - tick);
     for (int i = 0; i < 10; i++) {
         DWORD tick = GetTickCount64();
@@ -263,7 +268,7 @@ int SendScreen() {
     }*/
     pStream->Release();
     GlobalFree(hMem);
-    screen.ReleaseDC();   
+    screen.ReleaseDC();
     return 0;
 }
 #include "LcokDialog.h"
@@ -391,6 +396,7 @@ int ExcuteCmmond(int nCmd) {
         ret = MouseEvent();
     case 6://发送屏幕内容-->本质 发送屏幕截图
         ret = SendScreen();
+        break;
     case 7://锁机
         ret = LockMachine();
         break;

@@ -1,10 +1,2 @@
 ﻿  CWatchDialog.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(93,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
-  RemoteClient.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(93,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
-  RemoteClientDlg.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(93,19): warning C4244: “=”: 从“DWORD”转换到“WORD”，可能丢失数据
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(220,20): warning C4018: “<”: 有符号/无符号不匹配
-  StatusDlg.cpp
-  正在生成代码...
   RemoteClient.vcxproj -> C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\Debug\RemoteClient.exe

@@ -1,0 +1,42 @@
+﻿  pch.cpp
+  ClientSocket.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(18,19): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(180,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.cpp(12,2): error C2664: “DWORD FormatMessageW(DWORD,LPCVOID,DWORD,DWORD,LPWSTR,DWORD,va_list *)”: 无法将参数 5 从“LPSTR”转换为“LPWSTR”
+  CWatchDialog.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(18,19): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(180,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  RemoteClient.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(18,19): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(180,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  RemoteClientDlg.cpp
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(18,19): warning C4267: “=”: 从“size_t”转换到“DWORD”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\ClientSocket.h(180,58): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(76,51): error C2664: “int atoi(const char *)”: 无法将参数 1 从“LPCTSTR”转换为“const char *”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(78,3): error C2665: “AfxMessageBox”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(223,29): error C2665: “CTreeCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(224,11): error C2665: “CTreeCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(251,12): warning C4244: “初始化”: 从“LRESULT”转换到“int”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(264,61): warning C4267: “参数”: 从“size_t”转换到“ULONG”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(298,17): error C2664: “FILE *fopen(const char *,const char *)”: 无法将参数 1 从“CString”转换为“const char *”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(307,25): error C2440: “<function-style-cast>”: 无法从“CString”转换为“LPCSTR”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(311,62): error C2440: “类型强制转换”: 无法从“CString”转换为“LPCSTR”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(311,12): warning C4244: “初始化”: 从“LRESULT”转换到“int”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(313,5): error C2665: “AfxMessageBox”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(319,5): error C2665: “AfxMessageBox”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(326,6): error C2665: “AfxMessageBox”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(353,11): error C2665: “CListCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(391,29): error C2665: “CTreeCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(392,11): error C2665: “CTreeCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(395,11): error C2665: “CListCtrl::InsertItem”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(480,46): error C2440: “类型强制转换”: 无法从“CString”转换为“LPCSTR”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(480,12): error C2664: “int CRemoteClientDlg::SendCommandPacket(int,bool,BYTE *,size_t)”: 无法将参数 3 从“int”转换为“BYTE *”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(482,3): error C2665: “AfxMessageBox”: 没有重载函数可以转换所有参数类型
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(495,46): error C2440: “类型强制转换”: 无法从“CString”转换为“LPCSTR”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(495,12): error C2664: “int CRemoteClientDlg::SendCommandPacket(int,bool,BYTE *,size_t)”: 无法将参数 3 从“int”转换为“BYTE *”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(504,10): warning C4244: “初始化”: 从“WPARAM”转换到“int”，可能丢失数据
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(508,20): error C2440: “初始化”: 无法从“LPCSTR”转换为“ATL::CStringT<wchar_t,StrTraitMFC<wchar_t,ATL::ChTraitsCRT<wchar_t>>>”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(509,52): error C2440: “类型强制转换”: 无法从“CString”转换为“LPCSTR”
+C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(509,10): error C2664: “int CRemoteClientDlg::SendCommandPacket(int,bool,BYTE *,size_t)”: 无法将参数 3 从“int”转换为“BYTE *”
+  StatusDlg.cpp
+  正在生成代码...
