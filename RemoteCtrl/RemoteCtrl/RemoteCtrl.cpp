@@ -377,7 +377,7 @@ int DeleteLocalFile() {
 }
 
 int ExcuteCmmond(int nCmd) {
-    int ret = 0;
+    int ret = 0; 
     switch (nCmd)
     {
     case 1://查看磁盘分区
