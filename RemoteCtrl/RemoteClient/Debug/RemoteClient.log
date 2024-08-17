@@ -1,5 +1,2 @@
 ﻿  CWatchDialog.cpp
-  RemoteClientDlg.cpp
-C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\RemoteClient\RemoteClientDlg.cpp(222,20): warning C4018: “<”: 有符号/无符号不匹配
-  正在生成代码...
   RemoteClient.vcxproj -> C:\Users\davincideng\Desktop\remote_ctrl\romote_ctrl\RemoteCtrl\Debug\RemoteClient.exe
